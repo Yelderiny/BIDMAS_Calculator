@@ -42,8 +42,8 @@ public class Calculator
     public void setOperand1(String str) { operand1 = str; }
     public void setOperand2(String str) { operand2 = str; }
     public void setOperator(String str) { operator = str; }
-    public void setResult(float num) { result = num; }
-    public void setMemoryValue(float memval) { memoryValue = memval; }
+    public void setResult(final float num) { result = num; }
+    public void setMemoryValue(final float memval) { memoryValue = memval; }
     public void clearMemory() { memoryValue = 0; }
     private void resetStrings()
     {
@@ -67,7 +67,7 @@ public class Calculator
     }
 
     //validators
-    private static boolean isNumber(String expression)
+    private static boolean isNumber(final String expression)
     {
         if (expression == null) return false;
 
@@ -77,16 +77,16 @@ public class Calculator
         return true;
     }
 
-    private boolean isOperator(char c) { return c == '+' || c == '-' || c == '*' || c == '/' || c == '^'; }
-    private boolean isOperator(String expression) { return expression.equals("+") || expression.equals("-") || expression.equals("*") || expression.equals("/") || expression.equals("^"); }
-    private boolean isSymbol(char c) { return isOperator(c) || c == '(' || c == ')'; }
-    private boolean isSymbol(String expression) { return isOperator(expression) || expression.equals("(") || expression.equals(")"); }
+    private boolean isOperator(final char c) { return c == '+' || c == '-' || c == '*' || c == '/' || c == '^'; }
+    private boolean isOperator(final String expression) { return expression.equals("+") || expression.equals("-") || expression.equals("*") || expression.equals("/") || expression.equals("^"); }
+    private boolean isSymbol(final char c) { return isOperator(c) || c == '(' || c == ')'; }
+    private boolean isSymbol(final String expression) { return isOperator(expression) || expression.equals("(") || expression.equals(")"); }
 
     //reformulates the input
     //make private after creating the expression outputer
-    public String expressionReformulater(String expression)
+    public String reformatExpression(final String expression)
     {
-        StringBuilder newExpression = new StringBuilder(" "); //initialize StringBuilder
+        var newExpression = new StringBuilder(" "); //initialize StringBuilder
         char[] arr = expression.toCharArray(); //convert to char array
 
         //iterate
@@ -155,14 +155,14 @@ public class Calculator
     //evaluators
     public float evaluate(String expression)
     {
-        String newExpression = expressionReformulater(expression);
+        String newExpression = reformatExpression(expression);
 
-        if (!(newExpression.equals(" ")))
+        if (!newExpression.equals(" "))
         {
             String[] arr = newExpression.split(" "); //convert input to String array
             resetStrings(); //result all strings to ""
 
-            //at this point in time, if the user enters a stand alone number, it should just return the number or a negative number
+            //at this point in time, if the user enters a stand-alone number, it should just return the number or a negative number
             if (arr.length == 1)
             {
                 char[] arr2 = arr[0].toCharArray();
@@ -191,12 +191,12 @@ public class Calculator
     }
 
     //evaluates expressions with two numbers
-    private float evaluateHelper(String expression)
+    private float evaluateHelper(final String expression)
     {
         String[] arr = expression.split(" ");
-        StringBuilder operandOne = new StringBuilder();
-        StringBuilder operandTwo = new StringBuilder();
-        StringBuilder operatorBuilder = new StringBuilder();
+        var operandOne = new StringBuilder();
+        var operandTwo = new StringBuilder();
+        var operatorBuilder = new StringBuilder();
 
         for (String s : arr)
         {
@@ -269,14 +269,14 @@ public class Calculator
     }
 
     //evaluates expressions done on the memory value
-    private float evaluateMemHelper(String expression) { return evaluate(getMemoryValue() + expression); }
+    private float evaluateMemHelper(final String expression) { return evaluate(getMemoryValue() + expression); }
 
     //evaluates expressions with multiple operands and operators
-    private float extendedEvaluatorHelper(String expression)
+    private float extendedEvaluatorHelper(final String expression)
     {
         boolean muldiv = false, addsub = false, bracket = false, exponential = false;
         String[] arr = expression.split(" "); //split expression
-        StringBuilder newExpression = new StringBuilder();
+        var newExpression = new StringBuilder();
 
         //base case. expression is of length one means we have the result
         if (arr.length == 1)
@@ -408,7 +408,7 @@ public class Calculator
     }
 
     //helper function for extendedEvaluatorHelper
-    private float expressionReducer(String[] arr, StringBuilder newExpression, int i, char operator)
+    private float expressionReducer(final String[] arr, final StringBuilder newExpression, final int i, final char operator)
     {
         float evaluation = evaluate(arr[i-1] + operator + arr[i + 1]);
 

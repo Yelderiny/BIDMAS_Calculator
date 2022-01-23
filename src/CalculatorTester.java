@@ -4,8 +4,8 @@ public class CalculatorTester
 {
     public static void main(String[] args)
     {
-        Calculator operation = new Calculator();
-        Scanner in = new Scanner(System.in);
+        var operation = new Calculator();
+        var in = new Scanner(System.in);
         boolean done = false;
 
         while (!done)
@@ -38,7 +38,7 @@ public class CalculatorTester
                 default:
                     float answer = operation.evaluate(currOperation);
 
-                    if (answer != Float.MIN_VALUE) System.out.println(operation.expressionReformulater(currOperation) + " = " + answer);
+                    if (answer != Float.MIN_VALUE) System.out.println(operation.reformatExpression(currOperation) + " = " + answer);
                     else System.out.println("Invalid input");
             }
         }
