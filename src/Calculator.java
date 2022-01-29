@@ -36,12 +36,12 @@ public class Calculator
         else return memoryValue;
     }
 
-    public float getHistoryValue(int index) { return (float) history.toArray()[index]; }
+    public float getHistoryValue(final int index) { return (float) history.toArray()[index]; }
 
     //mutators
-    public void setOperand1(String str) { operand1 = str; }
-    public void setOperand2(String str) { operand2 = str; }
-    public void setOperator(String str) { operator = str; }
+    public void setOperand1(final String str) { operand1 = str; }
+    public void setOperand2(final String str) { operand2 = str; }
+    public void setOperator(final String str) { operator = str; }
     public void setResult(final float num) { result = num; }
     public void setMemoryValue(final float memval) { memoryValue = memval; }
     public void clearMemory() { memoryValue = 0; }
@@ -58,7 +58,7 @@ public class Calculator
     //printers
     public void printHistory()
     {
-        for ( int i = 0; i<history.toArray().length; i++)
+        for (int i = 0; i<history.toArray().length; i++)
         {
             System.out.print(history.toArray()[i]);
             System.out.print(" ");
@@ -155,17 +155,17 @@ public class Calculator
     //evaluators
     public float evaluate(String expression)
     {
-        String newExpression = reformatExpression(expression);
+        final String newExpression = reformatExpression(expression);
 
         if (!newExpression.equals(" "))
         {
-            String[] arr = newExpression.split(" "); //convert input to String array
+            final String[] arr = newExpression.split(" "); //convert input to String array
             resetStrings(); //result all strings to ""
 
             //at this point in time, if the user enters a stand-alone number, it should just return the number or a negative number
             if (arr.length == 1)
             {
-                char[] arr2 = arr[0].toCharArray();
+                final char[] arr2 = arr[0].toCharArray();
                 if (arr2[0] == '-') return evaluateMemHelper(newExpression);
                 else
                 {
@@ -174,10 +174,7 @@ public class Calculator
                     else return Float.MIN_VALUE;
                 }
             }
-
             if (arr.length == 3) return evaluateHelper(newExpression); //length three means two operands, send to evaluateHelper
-
-
 
             if (isOperator(arr[0]) && arr.length == 2) return evaluateMemHelper(newExpression); //length two means using memoryValue
 
@@ -193,12 +190,12 @@ public class Calculator
     //evaluates expressions with two numbers
     private float evaluateHelper(final String expression)
     {
-        String[] arr = expression.split(" ");
-        var operandOne = new StringBuilder();
-        var operandTwo = new StringBuilder();
-        var operatorBuilder = new StringBuilder();
+        final String[] arr = expression.split(" ");
+        final var operandOne = new StringBuilder();
+        final var operandTwo = new StringBuilder();
+        final var operatorBuilder = new StringBuilder();
 
-        for (String s : arr)
+        for (final String s : arr)
         {
             if (isNumber(s) || isSymbol(s))
             {
@@ -228,8 +225,8 @@ public class Calculator
         }
 
         //input begins with a number
-        float operand1 = Float.parseFloat(getOperand1()); //convert operand1
-        float operand2 = Float.parseFloat(getOperand2()); //convert operand2
+        final float operand1 = Float.parseFloat(getOperand1()); //convert operand1
+        final float operand2 = Float.parseFloat(getOperand2()); //convert operand2
 
         //find the operation
         switch (getOperator())
@@ -275,8 +272,9 @@ public class Calculator
     private float extendedEvaluatorHelper(final String expression)
     {
         boolean muldiv = false, addsub = false, bracket = false, exponential = false;
-        String[] arr = expression.split(" "); //split expression
-        var newExpression = new StringBuilder();
+
+        final String[] arr = expression.split(" "); //split expression
+        final var newExpression = new StringBuilder();
 
         //base case. expression is of length one means we have the result
         if (arr.length == 1)
@@ -287,7 +285,7 @@ public class Calculator
         }
 
         //iterate
-        for (String s : arr)
+        for (final String s : arr)
         {
             if (!isNumber(s) && !isSymbol(s)) return Float.MIN_VALUE; //error check
             if (s.equals("(")) bracket = true;
@@ -304,7 +302,7 @@ public class Calculator
                 if (arr[i].equals("("))
                 {
                     int endBracketIndex = 0;
-                    StringBuilder brackets = new StringBuilder();
+                    final var brackets = new StringBuilder();
 
                     for (int j = i + 1; j < arr.length; j++)
                     {
@@ -322,7 +320,7 @@ public class Calculator
 
                     for (int e = i+1; e < endBracketIndex; e++) { brackets.append(arr[e]); }
 
-                    float evaluation = evaluate(brackets.toString());
+                    final float evaluation = evaluate(brackets.toString());
 
                     if (evaluation != Float.MIN_VALUE) newExpression.append(evaluation).append(" ");
                     else
@@ -347,11 +345,8 @@ public class Calculator
             for (int i = 0; i < arr.length; i++)
             {
                 //exponential
-                if (arr[i].equals("^"))
-                {
-                    char operator = '^'; //set operator
-                    return expressionReducer(arr, newExpression, i, operator); //recursion
-                }
+                if (arr[i].equals("^")) return expressionReducer(arr, newExpression, i, '^'); //recursion
+
                 // code works without this line because of the expressionReformulator
                 else if (!arr[i + 1].equals("^")) newExpression.append(arr[i]).append(" "); //add element to StringBuilder if the next string is not muldiv
             }
@@ -364,18 +359,11 @@ public class Calculator
             for (int i = 0; i < arr.length; i++)
             {
                 //multiplication
-                if (arr[i].equals("*"))
-                {
-                    char operator = '*'; //set operator
-                    return expressionReducer(arr, newExpression, i, operator); //recursion
-                }
+                if (arr[i].equals("*")) return expressionReducer(arr, newExpression, i, '*'); //recursion
 
                 //division
-                if (arr[i].equals("/"))
-                {
-                    char operator = '/'; //set operator
-                    return expressionReducer(arr, newExpression, i, operator); //recursion
-                }
+                if (arr[i].equals("/")) return expressionReducer(arr, newExpression, i, '/'); //recursion
+
                 // code works without this line because of the expressionReformulator
                 else if (!arr[i + 1].equals("*") && !arr[i+1].equals("/")) newExpression.append(arr[i]).append(" "); //add element to StringBuilder if the next string is not muldiv
             }
@@ -387,18 +375,11 @@ public class Calculator
             for (int i = 0; i < arr.length; i++)
             {
                 //addition
-                if (arr[i].equals("+"))
-                {
-                    char operator = '+'; //set operator
-                    return expressionReducer(arr, newExpression, i, operator); //recursion
-                }
+                if (arr[i].equals("+")) return expressionReducer(arr, newExpression, i, '+'); //recursion
 
                 //subtraction
-                if (arr[i].equals("-"))
-                {
-                    char operator = '-'; //set operator
-                    return expressionReducer(arr, newExpression, i, operator); //recursion
-                }
+                if (arr[i].equals("-")) return expressionReducer(arr, newExpression, i, '-'); //recursion
+
                 // code works without this line because of the expressionReformulator
                 else if (!arr[i + 1].equals("+") && !arr[i+1].equals("-")) newExpression.append(arr[i]).append(" "); //add element to StringBuilder if the next string is not addsub
             }
@@ -410,7 +391,7 @@ public class Calculator
     //helper function for extendedEvaluatorHelper
     private float expressionReducer(final String[] arr, final StringBuilder newExpression, final int i, final char operator)
     {
-        float evaluation = evaluate(arr[i-1] + operator + arr[i + 1]);
+        final float evaluation = evaluate(arr[i-1] + operator + arr[i + 1]);
 
         if (evaluation != Float.MIN_VALUE) newExpression.append(evaluation).append(" "); //evaluate expresion around operator and add result to StringBuilder
         else
